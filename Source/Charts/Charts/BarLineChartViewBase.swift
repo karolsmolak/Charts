@@ -689,7 +689,13 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
             // If drag is enabled and we are in a position where there's something to drag:
             //  * If we're zoomed in, then obviously we have something to drag.
             //  * If we have a drag offset - we always have something to drag
-            if !self.hasNoDragOffset || !self.isFullyZoomedOut
+            if self.isHighlightPerDragEnabled
+            {
+                // We will only handle highlights on NSUIGestureRecognizerState.Changed
+                
+                _isDragging = false
+            }
+            else if !self.hasNoDragOffset || !self.isFullyZoomedOut
             {
                 _isDragging = true
                 
@@ -727,12 +733,6 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
                 }
                 
                 _lastPanPoint = recognizer.translation(in: self)
-            }
-            else if self.isHighlightPerDragEnabled
-            {
-                // We will only handle highlights on NSUIGestureRecognizerState.Changed
-                
-                _isDragging = false
             }
         }
         else if recognizer.state == NSUIGestureRecognizerState.changed
